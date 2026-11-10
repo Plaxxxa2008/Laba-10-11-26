@@ -18,11 +18,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Шаг 2: Запускаем сканирование секретов
+      # Шаг 2: Запускаем сканирование секретов без строгой валидации
       - name: TruffleHog OSS Scan
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
           base: ${{ github.event.repository.default_branch }}
           head: HEAD
-          extra_args: --results=verified,unknown
+          # Убираем --results=verified,unknown, чтобы увидеть неактивные токены
+          extra_args: ""
