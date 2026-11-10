@@ -7,7 +7,7 @@ print(a-a)
 def resheto(n):
     a=[1]*(n+1)
     a[0]=0
-    a[1]=1
+    a[1]=0
     st=2
     while st**2 <= n:
         if a[st]:
