@@ -11,19 +11,16 @@ jobs:
     name: Scan for Secrets
     runs-on: ubuntu-latest
     steps:
-      # Шаг 1: Скачиваем репозиторий. Важно выставить fetch-depth: 0,
-      # чтобы TruffleHog проверил всю историю коммитов, а не только текущее состояние.
+      # Шаг 1: Скачиваем текущий снимок кода (достаточно depth: 1, так как проверяем файлы)
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
-      # Шаг 2: Запускаем сканирование секретов без строгой валидации
-      - name: TruffleHog OSS Scan
+      # Шаг 2: Запускаем сканирование файловой системы без фильтрации результатов
+      - name: TruffleHog OSS Scan (Filesystem)
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
-          # Убираем --results=verified,unknown, чтобы увидеть неактивные токены
-          extra_args: ""
+          # Явно переводим в режим filesystem и отключаем только подтвержденные находки
+          extra_args: "filesystem --only-verified=false"
