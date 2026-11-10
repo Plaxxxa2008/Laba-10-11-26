@@ -19,4 +19,3 @@ def resheto(n):
         if a[i]:
             print(i)
 resheto(140)
-print('secret_vk_token: vk.a.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890abcdefghijklmnopqrstuvwxyz1234567890abcdefgh')
