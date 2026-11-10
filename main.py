@@ -20,3 +20,4 @@ def resheto(n):
             print(i)
 resheto(140)
 print('secret_vk_token: vk.a.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890abcdefghijklmnopqrstuvwxyz1234567890abcdefgh')
+print("test")
