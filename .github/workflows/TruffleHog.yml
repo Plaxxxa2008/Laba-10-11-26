@@ -1,4 +1,4 @@
-name: TruffleHog Secret Scan
+name: TruffleHog Filesystem Secret Scan
 
 on:
   push:
@@ -8,21 +8,37 @@ on:
 
 jobs:
   secret-scan:
-    name: Scan for Secrets
+    name: Scan Filesystem for Secrets
     runs-on: ubuntu-latest
     steps:
-      # Шаг 1: Скачиваем репозиторий. Важно выставить fetch-depth: 0,
-      # чтобы TruffleHog проверил всю историю коммитов, а не только текущее состояние.
+      # 1. Скачиваем код. Для сканирования файлов достаточно depth: 1
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
-      # Шаг 2: Запускаем сканирование секретов
-      - name: TruffleHog OSS Scan
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
-          extra_args: --results=verified,unknown
+      # 2. Создаём конфиг с кастомным детектором для VK-токена
+      - name: Create TruffleHog custom detector config
+        run: |
+          cat > trufflehog-config.yaml <<'EOF'
+          detectors:
+            - name: VK Token
+              keywords:
+                - "vk."
+              regex:
+                vk_token: 'vk\.a\.[A-Za-z0-9]{80,}'
+          EOF
+
+      # 3. Устанавливаем TruffleHog CLI (официальный установщик)
+      - name: Install TruffleHog CLI
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b /usr/local/bin
+
+      # 4. Запускаем сканирование файловой системы с нашим конфигом
+      - name: Run TruffleHog filesystem scan
+        run: |
+          trufflehog filesystem . \
+            --config trufflehog-config.yaml \
+            --no-verification \
+            --fail \
+            --exclude-paths=<(echo -e ".git/\nnode_modules/\nvenv/\n__pycache__/")
