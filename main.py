@@ -19,4 +19,4 @@ def resheto(n):
         if a[i]:
             print(i)
 resheto(140)
-print('ghp_vY7v8N9m0K1L2J3I4H5G6F7E8D9C0B1A2z3y')
+print('secret_vk_azure: vk.a.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890abcdefghijklmnopqrstuvwxyz1234567890abcdefgh')
